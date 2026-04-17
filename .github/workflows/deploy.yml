@@ -1,0 +1,49 @@
+name: Deploy Full Stack App
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Test Rust backend
+        run: |
+          cd backend
+          cargo test
+
+      - name: Build Rust backend
+        run: |
+          cd backend
+          cargo build --release
+
+      # --- Deployment steps (replace with your platform) ---
+      - name: Deploy frontend to Vercel/Netlify
+        run: echo "Deploy frontend here (see README)"
+      - name: Deploy backend to Render/Railway
+        run: echo "Deploy backend here (see README)"
